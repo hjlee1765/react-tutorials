@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import PhoneForm from './components/PhoneForm';
+import PhoneInfoList from './components/PhoneInfoList';
 
 class App extends Component {
 
-  //데이터가 들어갈 때 마다, 고유한 id값이 들어가게 한다.
+  //배열의 고유한 key값을 넣어준다.
+  //배열의 index와는 다르다.
   id = 0;
 
   state = {
@@ -20,14 +22,41 @@ class App extends Component {
         ...data,
         id: this.id ++
       })
-    })
+    });
   }
+
+  handleRemove = (id) =>{
+    const {information} = this.state;
+    this.setState({
+      information: information.filter(info => info.id !== id)
+    });
+  };
+
+  handleUpdate = (id, data) => {
+    const {information} = this.state;
+    this.setState({
+      information: information.map(
+        info => {
+          if(info.id === id){
+            return{
+            id,
+            ...data,
+            };
+          }
+          return info;
+        })
+    })
+  };
 
   render() {
     return (
       <div>
         <PhoneForm onCreate = {this.handleCreate}/>
-        {JSON.stringify(this.state.information)}
+        <PhoneInfoList
+         data = {this.state.information}
+         onRemove = {this.handleRemove}
+         onUpdate = {this.handleUpdate}
+         />
       </div>
     );
   }
